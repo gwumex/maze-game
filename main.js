@@ -1,4 +1,4 @@
-const { Engine, Render, Runner, World, Bodies, MouseConstraint, Mouse } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body} = Matter;
 const cells = 15;
 const width = 600;
 const height = 600;
@@ -163,18 +163,18 @@ const  ball = Bodies.circle(
 World.add(world, ball)
 
 document.addEventListener('keydown', (event) => {
-    if(event.key === 'w'){
-        console.log("move ball up");
+    const {x, y} = ball.velocity;
+    console.log(x, y);
+    if(event.key === 'ArrowUp'){
+        Body.setVelocity(ball, {x, y: y-5})
     }    
-    else if(event.key === 'd'){
-        console.log("move ball right");
+    else if(event.key === 'ArrowRight'){
+        Body.setVelocity(ball, {x: x + 5, y})
     }
-    else if(event.key === 's'){
-        console.log("move ball down");
+    else if(event.key === 'ArrowDown'){
+        Body.setVelocity(ball, {x, y: y + 5})
     }
-    else if(event.key === 'a'){
-        console.log("move ball right");
-    }else{
-        return;
+    else if(event.key === 'ArrowLeft'){
+        Body.setVelocity(ball, {x: x - 5, y})
     }
 })
