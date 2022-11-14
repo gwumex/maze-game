@@ -100,6 +100,7 @@ const stepThroughCell = (row, column) => {
         } else if (direction === 'down'){
             horizontal[row][column]
         }
+        stepThroughCell(nextRow, nextColumn);
     }
 }
 
