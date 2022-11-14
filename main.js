@@ -1,7 +1,7 @@
 const { Engine, Render, Runner, World, Bodies, MouseConstraint, Mouse } = Matter;
-const cells = 5;
-const width = 1000;
-const height = 1000;
+const cells = 15;
+const width = 600;
+const height = 600;
 
 const unitLength = width / cells;
 const engine = Engine.create();
@@ -17,19 +17,18 @@ const render = Render.create({
 });
 Render.run(render);
 Runner.run(Runner.create(), engine)
-
+//walls
 const walls = [
-
-    Bodies.rectangle(width / 2, 0, width, 40, {
+    Bodies.rectangle(width / 2, 0, width, 2, {
         isStatic: true
     }),
-    Bodies.rectangle(width / 2, height, width, 40, {
+    Bodies.rectangle(width / 2, height, width, 2, {
         isStatic: true
     }),
-    Bodies.rectangle(0, height / 2, 40, height, {
+    Bodies.rectangle(0, height / 2, 2, height, {
         isStatic: true
     }),
-    Bodies.rectangle(width, height / 2, 40, height, {
+    Bodies.rectangle(width, height / 2, 2, height, {
         isStatic: true
     })
 ]
@@ -100,13 +99,14 @@ const stepThroughCell = (row, column) => {
         } else if(direction === 'up'){
             horizontal[row - 1][column] = true;
         } else if (direction === 'down'){
-            horizontal[row][column]
+            horizontal[row][column] = true;
         }
         stepThroughCell(nextRow, nextColumn);
     }
 }
 
 stepThroughCell(startRow, startColumn);
+
 horizontal.forEach((row, rowIndex) => {
     row.forEach((open, columnIndex) => {
         if (open) {
@@ -124,3 +124,29 @@ horizontal.forEach((row, rowIndex) => {
         World.add(world, wall);
     })
 })
+
+vertical.forEach((row, rowIndex) => {
+    row.forEach((open, columnIndex) => {
+        if (open) {
+            return;
+        }
+        const wall = Bodies.rectangle(
+            columnIndex * unitLength + unitLength,
+            rowIndex * unitLength + unitLength / 2,
+            10,
+            unitLength,
+            {
+                isStatic: true
+            }
+        );
+        World.add(world, wall);
+    })
+})
+
+const goal = Bodies.rectangle(
+    width - unitLength / 2,
+    height - unitLength / 2,
+    unitLength * 0.7,
+    unitLength * 0.7
+)
+World.add(world, goal);
