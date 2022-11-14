@@ -142,11 +142,22 @@ vertical.forEach((row, rowIndex) => {
         World.add(world, wall);
     })
 })
-
+//goal
 const goal = Bodies.rectangle(
     width - unitLength / 2,
     height - unitLength / 2,
     unitLength * 0.7,
-    unitLength * 0.7
+    unitLength * 0.7,
+    {
+        isStatic: true
+    }
 )
 World.add(world, goal);
+
+//ball
+const  ball = Bodies.circle(
+    unitLength / 2, 
+    unitLength / 2,
+    unitLength / 4
+)
+World.add(world, ball)
