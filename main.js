@@ -1,10 +1,11 @@
-const { Engine, Render, Runner, World, Bodies, Body} = Matter;
-const cells = 15;
+const { Engine, Render, Runner, World, Bodies, Body, Events} = Matter;
+const cells = 3;
 const width = 600;
 const height = 600;
 
 const unitLength = width / cells;
 const engine = Engine.create();
+engine.world.gravity.y = 0;
 const { world } = engine;
 const render = Render.create({
     element: document.body,
@@ -118,7 +119,8 @@ horizontal.forEach((row, rowIndex) => {
             unitLength,
             10,
             {
-                isStatic: true
+                isStatic: true,
+                label: 'wall'
             }
         );
         World.add(world, wall);
@@ -136,7 +138,8 @@ vertical.forEach((row, rowIndex) => {
             10,
             unitLength,
             {
-                isStatic: true
+                isStatic: true,
+                label: 'wall'
             }
         );
         World.add(world, wall);
@@ -149,7 +152,8 @@ const goal = Bodies.rectangle(
     unitLength * 0.7,
     unitLength * 0.7,
     {
-        isStatic: true
+        isStatic: true,
+        label: 'goal'
     }
 )
 World.add(world, goal);
@@ -158,13 +162,15 @@ World.add(world, goal);
 const  ball = Bodies.circle(
     unitLength / 2, 
     unitLength / 2,
-    unitLength / 4
+    unitLength / 4,
+    {
+        label: 'ball'
+    }
 )
-World.add(world, ball)
+World.add(world, ball);
 
 document.addEventListener('keydown', (event) => {
     const {x, y} = ball.velocity;
-    console.log(x, y);
     if(event.key === 'ArrowUp'){
         Body.setVelocity(ball, {x, y: y-5})
     }    
@@ -177,4 +183,17 @@ document.addEventListener('keydown', (event) => {
     else if(event.key === 'ArrowLeft'){
         Body.setVelocity(ball, {x: x - 5, y})
     }
-})
+});
+
+Events.on(engine, 'collisionStart', event =>{
+event.pairs.forEach((collision) => {
+    const labels = ['ball', 'goal'];
+    if(labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label) )
+    world.bodies.forEach(body => {
+        world.gravity.y = 1;
+        if(body.label === 'wall'){
+            Body.setStatic(body, false);
+        }
+    })
+});
+});
